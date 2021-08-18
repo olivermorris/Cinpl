@@ -1,6 +1,8 @@
 import numpy as np
 import math
 
+from numpy.random import f
+
 
 
 
@@ -11,21 +13,42 @@ equation_list = np.zeros((10000), dtype = 'object')
 
 
 
-def calc(f_protein, m_protein, direction, stage_left, stage_right):
-    if direction == 'left':
-        total = f_protein[0]+m_protein[-1]
-        #match = np.where(total != 3)[0]
-        if total[-1] or total[0] == 3:
-            for match in total:
-                if match != 3:
-                    break
-                stage_left+=1
+def calc(f_protein, m_protein, halting):
+    for f in reversed(range(0, halting)):
+        #result_top = [(m_protein[i]+f_protein[f]) for i in range(0, halting)]
+        for i in range(0, halting):
+            match = (m_protein[i]+f_protein[f])[0],(m_protein[i]+f_protein[f])[-1]
+            if match[0] == 3:
+                pass
 
-            for match in reversed(total):
-                if match != 3:
-                    break
-                stage_right+=1
+def move_calc(f_protein,  m_protein, direction, shape, move_array, cordinate_array):
+    if cordinate_array[0] == 'start':
+        if f_protein[0][0]+m_protein[-1][-1] == 3:
+            move_calc(f_protein, m_protein, direction, shape, move_array, cordinate_array)
+    
+
+
+
         
+
+    
+
+
+
+
+
+        print('result bottom',result_top)
+        '''
+        result_bottom = f_protein[-1]+m_protein[0]
+        result_left = f_protein[:][0]+m_protein[:][-1]
+        result_right = f_protein[:][-1]+m_protein[:][0]
+        '''
+        
+
+
+
+   
+
         
             
 
@@ -47,7 +70,7 @@ def start_sim(grid, genome, sym, dimension, simulation_length):
              where_active_m = genome[1][np.where(genome[1,:,0] > 0)[0]]
              for f_protein in where_active_f:
                  for m_protein in where_active_m:
-                     calc(f_protein[0:9].reshape((dimension, dimension)), m_protein[0:9].reshape((dimension, dimension)), 'left', 0, 0)
+                     calc(f_protein[0:9].reshape((dimension, dimension)), m_protein[0:9].reshape((dimension, dimension)), dimension)
 
     else:
         return "Simulation Extinct"
