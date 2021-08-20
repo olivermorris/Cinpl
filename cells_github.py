@@ -1,15 +1,23 @@
 import numpy as np
 import math
-
+from treelib import Node, Tree
 from numpy.random import f
 
 
 
 
-genome_path = input("Welcome to the Cinpl, please input the path to your source file.: ")
 genome = np.zeros((2,100,15))
 sim_grid = np.zeros((10000))
 equation_list = np.zeros((10000), dtype = 'object')
+
+while True:
+    try:
+        genome_path = input("Welcome to the Cinpl, please input the path to your source file.: ")
+        genome_file = open(genome_path, "r")
+        break
+    except:
+        print("Error, the path you input is not valid.")
+    
 
 
 
@@ -21,10 +29,29 @@ def calc(f_protein, m_protein, halting):
             if match[0] == 3:
                 pass
 
-def move_calc(f_protein,  m_protein, direction, shape, move_array, cordinate_array):
-    if cordinate_array[0] == 'start':
+def move_calc(f_protein,  m_protein, direction, cordinate_array, tree):
+    ys_f = cordinate_array[0]
+    ye_f = cordinate_array[1]
+    xs_f = cordinate_array[2]
+    xe_f = cordinate_array[3]
+    
+    ys_m = cordinate_array[4]
+    ye_m = cordinate_array[5]
+    xs_m = cordinate_array[6]
+    xe_m = cordinate_array[7]
+    if direction == 'i':
+        grid_tree = Tree()
+        grid_tree.create_node('n1', 0)
         if f_protein[0][0]+m_protein[-1][-1] == 3:
-            move_calc(f_protein, m_protein, direction, shape, move_array, cordinate_array)
+            grid_tree.create_node("n1", 1, parent=0)
+            cordinates = [0,1,0,2,-1,-2,-1,-3]
+            move_calc(f_protein, m_protein, 'l', cordinates, grid_tree)
+    #sum_same =  (f_protein[ys_f:ye_f, xs_f:xe_f]m_protein[ys_m:ye_m, xs_m:xe_m])
+    print(f_protein[ys_f:ye_f, xs_f:xe_f],m_protein[ys_m:ye_m, xs_m:xe_m])
+
+            
+    
+        
     
 
 
@@ -37,17 +64,8 @@ def move_calc(f_protein,  m_protein, direction, shape, move_array, cordinate_arr
 
 
 
-        print('result bottom',result_top)
-        '''
-        result_bottom = f_protein[-1]+m_protein[0]
-        result_left = f_protein[:][0]+m_protein[:][-1]
-        result_right = f_protein[:][-1]+m_protein[:][0]
-        '''
-        
-
-
-
-   
+       
+      
 
         
             
@@ -70,7 +88,7 @@ def start_sim(grid, genome, sym, dimension, simulation_length):
              where_active_m = genome[1][np.where(genome[1,:,0] > 0)[0]]
              for f_protein in where_active_f:
                  for m_protein in where_active_m:
-                     calc(f_protein[0:9].reshape((dimension, dimension)), m_protein[0:9].reshape((dimension, dimension)), dimension)
+                     move_calc(f_protein[0:9].reshape((dimension, dimension)), m_protein[0:9].reshape((dimension, dimension)), 'i', [0,0,0,0,0,0,0,0], 0)
 
     else:
         return "Simulation Extinct"
@@ -86,7 +104,7 @@ def start_sim(grid, genome, sym, dimension, simulation_length):
 
 
 
-genome_file = open(genome_path, "r")
+
 m_counter = 0
 f_counter = 0
 for input_str in genome_file:
